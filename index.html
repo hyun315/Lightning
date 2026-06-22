@@ -342,7 +342,7 @@
     <h3>📤 상대방에게 전달</h3>
     <div class="url-box" id="share-url-display">—</div>
     <div class="btn-row">
-      <button class="share-btn kakao" onclick="shareKakao()">카카오톡</button>
+      <button class="share-btn kakao" onclick="shareKakao()">카톡에 복사</button>
       <button class="share-btn copy"  onclick="copyUrl()">링크 복사</button>
     </div>
     <div style="text-align:center;">
@@ -452,20 +452,12 @@ async function doStrike() {
 
 function shareKakao() {
   const url = document.getElementById('share-url-display').textContent;
-  const kakaoUrl = `kakaolink://send?text=${encodeURIComponent('⚡ 번개 맞을 준비 됐어?\n' + url)}`;
-  // 카카오톡 앱 딥링크 시도, 실패 시 복사
-  const a = document.createElement('a');
-  a.href = kakaoUrl;
-  try {
-    window.location.href = kakaoUrl;
-  } catch(e) { copyUrl(); }
-  // 2초 후에도 안 넘어갔으면 복사 안내
-  setTimeout(() => {
-    if (document.hidden === false) {
-      const ok = confirm('카카오톡으로 전환이 안 됐어요.\n링크를 클립보드에 복사할까요?');
-      if (ok) copyUrl();
-    }
-  }, 2000);
+  const text = `⚡ 번개 맞을 준비 됐어?\n${url}`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('✅ 복사됐어요!\n카카오톡 열고 붙여넣기 하세요.');
+  }).catch(() => {
+    prompt('아래 내용을 복사해서 카톡에 보내세요:', text);
+  });
 }
 
 function copyUrl() {
