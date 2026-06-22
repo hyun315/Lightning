@@ -371,96 +371,48 @@
 
 <script>
 /* ─────────────────────────────────────────────
+   FIREBASE CONFIG (하드코딩)
+───────────────────────────────────────────── */
+const FIREBASE_CONFIG = {
+  apiKey:      "AIzaSyCpDyJv8swtrXo8Kf18BRkPkf_3JQJzS7s",
+  projectId:   "lightning-a0506",
+  databaseURL: "https://lightning-a0506-default-rtdb.firebaseio.com",
+};
+
+/* ─────────────────────────────────────────────
    GLOBALS
 ───────────────────────────────────────────── */
 let db = null;
 let sessionId = null;
 let isDemo = false;
 let isReceiver = false;
-let demoListeners = [];
 
 /* ─────────────────────────────────────────────
    INIT
 ───────────────────────────────────────────── */
 window.addEventListener('DOMContentLoaded', () => {
+  hide('config-modal'); // 설정 모달 항상 숨김
+
+  try {
+    if (firebase.apps.length === 0) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+    db = firebase.database();
+  } catch(e) {
+    console.warn('Firebase 초기화 실패, 데모 모드:', e);
+    isDemo = true;
+  }
+
   const params = new URLSearchParams(location.search);
   sessionId = params.get('s');
 
   if (sessionId) {
-    // 수신자 모드: URL로 접근
     isReceiver = true;
-    const saved = localStorage.getItem('bbungae_cfg');
-    if (saved) {
-      try { initFirebase(JSON.parse(saved)); } catch(e) { demoReceiver(); }
-    } else { demoReceiver(); }
+    showReceiverScreen();
   } else {
-    // 발신자 모드
-    const saved = localStorage.getItem('bbungae_cfg');
-    if (saved) {
-      try {
-        initFirebase(JSON.parse(saved));
-        hide('config-modal');
-        show('screen-striker');
-      } catch(e) { /* show config */ }
-    }
-    // else: config modal 표시됨
+    show('screen-striker');
   }
 });
-
-/* ─────────────────────────────────────────────
-   FIREBASE INIT
-───────────────────────────────────────────── */
-function initFirebase(cfg) {
-  if (firebase.apps.length === 0) {
-    firebase.initializeApp({
-      apiKey: cfg.apiKey,
-      projectId: cfg.projectId,
-      databaseURL: cfg.databaseURL,
-    });
-  }
-  db = firebase.database();
-}
-
-function saveConfig() {
-  const apiKey    = document.getElementById('cfg-apiKey').value.trim();
-  const projectId = document.getElementById('cfg-projectId').value.trim();
-  const databaseURL = document.getElementById('cfg-dbUrl').value.trim();
-  if (!apiKey || !projectId || !databaseURL) {
-    alert('세 항목을 모두 입력해 주세요.');
-    return;
-  }
-  const cfg = { apiKey, projectId, databaseURL };
-  localStorage.setItem('bbungae_cfg', JSON.stringify(cfg));
-  try {
-    initFirebase(cfg);
-    hide('config-modal');
-    if (isReceiver) { showReceiverScreen(); }
-    else { show('screen-striker'); }
-  } catch(e) {
-    alert('Firebase 연결 실패: ' + e.message);
-  }
-}
-
-/* ─────────────────────────────────────────────
-   DEMO MODE
-───────────────────────────────────────────── */
-function demoMode() {
-  isDemo = true;
-  hide('config-modal');
-  document.body.insertAdjacentHTML('beforeend',
-    '<div class="demo-badge">데모 모드</div>');
-  if (isReceiver) { demoReceiver(); }
-  else { show('screen-striker'); }
-}
-
-function demoReceiver() {
-  isDemo = true;
-  isReceiver = true;
-  document.body.insertAdjacentHTML('beforeend',
-    '<div class="demo-badge">데모 모드</div>');
-  hide('config-modal');
-  showReceiverScreen();
-}
 
 /* ─────────────────────────────────────────────
    STRIKER: 번개 때리기
