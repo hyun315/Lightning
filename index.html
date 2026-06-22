@@ -452,11 +452,10 @@ async function doStrike() {
 
 function shareKakao() {
   const url = document.getElementById('share-url-display').textContent;
-  const text = `⚡ 번개 맞을 준비 됐어?\n${url}`;
-  navigator.clipboard.writeText(text).then(() => {
-    alert('✅ 복사됐어요!\n카카오톡 열고 붙여넣기 하세요.');
+  navigator.clipboard.writeText(url).then(() => {
+    alert('✅ 링크 복사!\n카카오톡에 붙여넣기하면\n미리보기 링크로 전송돼요 ⚡');
   }).catch(() => {
-    prompt('아래 내용을 복사해서 카톡에 보내세요:', text);
+    prompt('아래 링크를 복사해서 카톡에 보내세요:', url);
   });
 }
 
