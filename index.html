@@ -339,13 +339,13 @@
   <div class="bolt-label">눌러서 번개 때리기</div>
 
   <div id="share-panel" class="share-panel hidden" style="margin-top:28px;">
-    <h3>📤 상대방에게 전달</h3>
-    <div class="url-box" id="share-url-display">—</div>
-    <div class="btn-row">
-      <button class="share-btn kakao" onclick="shareKakao()">카톡에 복사</button>
-      <button class="share-btn copy"  onclick="copyUrl()">링크 복사</button>
-    </div>
-    <div style="text-align:center;">
+    <h3>📤 카톡에 링크 전달하기</h3>
+    <div class="url-box" id="share-url-display" onclick="copyUrl()" style="cursor:pointer; border:1px solid rgba(255,230,0,0.4); font-size:0.8rem;">—</div>
+    <button class="share-btn kakao" style="width:100%; font-size:1rem; padding:14px; margin-top:0;" onclick="copyUrl()">📋 링크 복사</button>
+    <p style="font-size:0.72rem; color:var(--muted); text-align:center; margin-top:8px; line-height:1.6;">
+      복사 후 카톡 채팅창에 <b style="color:var(--text);">길게 눌러 붙여넣기</b><br>URL만 보내야 링크로 전송돼요
+    </p>
+    <div style="text-align:center; margin-top:8px;">
       <span class="waiting-chip"><span class="dot-pulse"></span> 상대방 응답 대기 중…</span>
     </div>
   </div>
